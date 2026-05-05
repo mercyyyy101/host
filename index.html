@@ -150,7 +150,7 @@
       </svg>
     </div>
     <h2>Drop files or folders here</h2>
-    <p>Supports individual files, multi-select, and entire folder drag & drop. Max 10 MB per file.</p>
+    <p>Supports individual files, multi-select, and entire folder drag & drop. Max 500 MB per file.</p>
     <div class="upload-btns">
       <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('file-input').click()">Choose files</button>
       <button class="btn btn-folder" onclick="event.stopPropagation();document.getElementById('folder-input').click()">
@@ -420,7 +420,7 @@ function createFolder(name, parentId){
 
 /* ── UPLOAD FILES ── */
 function uploadFiles(rawFiles, folderId){
-  const MAX=10*1024*1024;
+  const MAX=500*1024*1024;
   const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
   const fid=folderId!==undefined?folderId:curFolderId();
   const arr=[...rawFiles];if(!arr.length)return;
@@ -429,7 +429,7 @@ function uploadFiles(rawFiles, folderId){
   function next(){
     if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
     const file=arr.shift();
-    if(file.size>MAX){toast(file.name+' is too large (max 10 MB)','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    if(file.size>MAX){toast(file.name+' is too large (max 500 MB)','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
     const reader=new FileReader();
     reader.onload=e=>{existing.push({id:uid(),name:file.name,type:file.type,size:file.size,uploaded:Date.now(),folder_id:fid,data:e.target.result});done++;bar.style.width=(done/total*100)+'%';if(!sf(existing)){next();return;}toast('Uploaded '+file.name);next();};
     reader.readAsDataURL(file);
@@ -458,7 +458,7 @@ function handleFolderInput(rawFiles){
   });
   sd(folders);
 
-  const MAX=10*1024*1024;
+  const MAX=500*1024*1024;
   const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
   progress.classList.add('active');bar.style.width='0%';
   const existing=gf();let done=0;const total=fileList.length;
@@ -466,7 +466,7 @@ function handleFolderInput(rawFiles){
   function next(){
     if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
     const file=arr.shift();
-    if(file.size>MAX){toast(file.name+' too large','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    if(file.size>MAX){toast(file.name+' is too large (max 500 MB)','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
     const parts=file.webkitRelativePath.split('/');
     const key=parts.slice(0,parts.length-1).join('/');
     const folderId=folderMap[key]||curFolderId();
@@ -511,7 +511,7 @@ zone.addEventListener('drop',async e=>{
   }
 
   if(!allFiles.length)return;
-  const MAX=10*1024*1024;
+  const MAX=500*1024*1024;
   const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
   progress.classList.add('active');bar.style.width='0%';
   const existing=gf();let done=0;const total=allFiles.length;
@@ -519,7 +519,7 @@ zone.addEventListener('drop',async e=>{
   function next(){
     if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
     const file=arr.shift();
-    if(file.size>MAX){toast(file.name+' too large','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    if(file.size>MAX){toast(file.name+' is too large (max 500 MB)','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
     const reader=new FileReader();
     reader.onload=ev=>{existing.push({id:uid(),name:file.name,type:file.type,size:file.size,uploaded:Date.now(),folder_id:file._folderId||'',data:ev.target.result});done++;bar.style.width=(done/total*100)+'%';sf(existing);next();};
     reader.readAsDataURL(file);
