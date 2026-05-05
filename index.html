@@ -7,420 +7,130 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0d0d0f;
-    --surface: #18181b;
-    --surface2: #222228;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0eff2;
-    --muted: #888899;
-    --accent: #7c6aff;
-    --accent-glow: rgba(124,106,255,0.18);
-    --accent-light: #a89bff;
-    --success: #3ecf8e;
-    --danger: #f87171;
-    --warning: #fbbf24;
-    --mono: 'Space Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-    --radius: 10px;
-    --radius-lg: 16px;
+    --bg: #0d0d0f; --surface: #18181b; --surface2: #222228;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+    --text: #f0eff2; --muted: #888899;
+    --accent: #7c6aff; --accent-glow: rgba(124,106,255,0.18); --accent-light: #a89bff;
+    --success: #3ecf8e; --danger: #f87171; --folder: #fbbf24;
+    --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+    --radius: 10px; --radius-lg: 16px;
   }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  nav { display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:58px; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(13,13,15,0.92); backdrop-filter:blur(12px); z-index:100; }
+  .logo { font-family:var(--mono); font-size:17px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:9px; text-decoration:none; cursor:pointer; border:none; background:none; }
+  .logo-icon { width:28px; height:28px; background:var(--accent); border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .logo-icon svg { width:16px; height:16px; }
+  .nav-actions { display:flex; gap:10px; align-items:center; }
 
-  /* NAV */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    height: 58px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: rgba(13,13,15,0.92);
-    backdrop-filter: blur(12px);
-    z-index: 100;
-  }
+  .btn { font-family:var(--sans); font-size:13.5px; font-weight:500; padding:7px 16px; border-radius:var(--radius); border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .btn:hover { color:var(--text); border-color:rgba(255,255,255,0.25); background:var(--surface2); }
+  .btn-primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#6a58f0; border-color:#6a58f0; color:#fff; }
+  .btn-sm { padding:5px 11px; font-size:12.5px; }
+  .btn-danger { border-color:rgba(248,113,113,0.3); color:var(--danger); }
+  .btn-danger:hover { background:rgba(248,113,113,0.1); }
+  .btn-icon { padding:6px; width:32px; height:32px; justify-content:center; }
+  .btn-folder { border-color:rgba(251,191,36,0.3); color:var(--folder); }
+  .btn-folder:hover { background:rgba(251,191,36,0.08); color:var(--folder); }
 
-  .logo {
-    font-family: var(--mono);
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    text-decoration: none;
-  }
+  main { flex:1; max-width:1100px; width:100%; margin:0 auto; padding:2.5rem 2rem; }
 
-  .logo-icon {
-    width: 28px; height: 28px;
-    background: var(--accent);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-  }
+  .note-bar { background:rgba(124,106,255,0.08); border:1px solid rgba(124,106,255,0.2); border-radius:var(--radius); padding:10px 16px; font-size:13px; color:var(--accent-light); margin-bottom:2rem; display:flex; align-items:flex-start; gap:8px; }
 
-  .logo-icon svg { width: 16px; height: 16px; }
+  .upload-zone { border:2px dashed var(--border2); border-radius:var(--radius-lg); padding:3rem 2rem; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--surface); margin-bottom:2rem; position:relative; overflow:hidden; }
+  .upload-zone::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, var(--accent-glow), transparent 70%); pointer-events:none; opacity:0; transition:opacity 0.3s; }
+  .upload-zone.drag-over, .upload-zone:hover { border-color:var(--accent); }
+  .upload-zone.drag-over::before, .upload-zone:hover::before { opacity:1; }
+  .upload-icon { width:48px; height:48px; border-radius:12px; background:var(--surface2); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; }
+  .upload-zone h2 { font-weight:600; font-size:18px; margin-bottom:5px; }
+  .upload-zone p { color:var(--muted); font-size:13.5px; margin-bottom:1.25rem; }
+  .upload-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  #file-input, #folder-input { display:none; }
+  .upload-progress { margin-top:1rem; height:3px; background:var(--border2); border-radius:99px; overflow:hidden; display:none; }
+  .upload-progress.active { display:block; }
+  .progress-bar { height:100%; background:var(--accent); border-radius:99px; width:0%; transition:width 0.3s; }
 
-  nav .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .stats-bar { display:flex; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:2rem; }
+  .stat { flex:1; background:var(--surface); padding:14px 20px; display:flex; flex-direction:column; gap:2px; }
+  .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); font-family:var(--mono); }
+  .stat-value { font-size:22px; font-weight:600; color:var(--text); font-family:var(--mono); }
+  .stat-value span { font-size:13px; font-weight:400; color:var(--muted); margin-left:2px; }
 
-  /* BUTTONS */
-  .btn {
-    font-family: var(--sans);
-    font-size: 13.5px;
-    font-weight: 500;
-    padding: 7px 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border2);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); background: var(--surface2); }
-  .btn-primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-  .btn-primary:hover { background: #6a58f0; border-color: #6a58f0; color: #fff; }
-  .btn-sm { padding: 5px 11px; font-size: 12.5px; }
-  .btn-danger { border-color: rgba(248,113,113,0.3); color: var(--danger); }
-  .btn-danger:hover { background: rgba(248,113,113,0.1); color: var(--danger); }
-  .btn-icon { padding: 6px; width: 32px; height: 32px; justify-content: center; }
+  .breadcrumb { display:flex; align-items:center; gap:4px; margin-bottom:1.25rem; flex-wrap:wrap; min-height:32px; }
+  .bc-item { font-family:var(--mono); font-size:13px; color:var(--muted); cursor:pointer; padding:4px 8px; border-radius:6px; transition:all 0.12s; display:inline-flex; align-items:center; gap:5px; border:none; background:none; }
+  .bc-item:hover { color:var(--text); background:var(--surface2); }
+  .bc-item.active { color:var(--text); cursor:default; pointer-events:none; }
+  .bc-sep { color:var(--border2); font-size:16px; user-select:none; }
 
-  /* MAIN LAYOUT */
-  main {
-    flex: 1;
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-  }
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .section-title { font-size:13px; font-family:var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; }
+  .search-wrap { position:relative; width:220px; }
+  .search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; width:14px; height:14px; }
+  .search-wrap input { width:100%; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:7px 10px 7px 32px; font-size:13px; font-family:var(--sans); color:var(--text); outline:none; transition:border-color 0.15s; }
+  .search-wrap input:focus { border-color:var(--accent); }
+  .search-wrap input::placeholder { color:var(--muted); }
 
-  /* HERO / UPLOAD AREA */
-  .upload-zone {
-    border: 2px dashed var(--border2);
-    border-radius: var(--radius-lg);
-    padding: 3.5rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
-    margin-bottom: 2.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-zone::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, var(--accent-glow), transparent 70%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .upload-zone.drag-over, .upload-zone:hover { border-color: var(--accent); }
-  .upload-zone.drag-over::before, .upload-zone:hover::before { opacity: 1; }
+  .files-list { display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+  .file-row { display:grid; grid-template-columns:36px 1fr auto auto auto; align-items:center; gap:12px; padding:13px 16px; background:var(--surface); transition:background 0.12s; }
+  .file-row:hover { background:var(--surface2); }
+  .file-row.is-folder { cursor:pointer; }
+  .file-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; font-weight:700; flex-shrink:0; text-transform:uppercase; }
+  .folder-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.25); flex-shrink:0; }
+  .file-info { min-width:0; }
+  .file-name { font-size:14px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .file-meta { font-size:12px; color:var(--muted); margin-top:1px; font-family:var(--mono); }
+  .file-size { font-family:var(--mono); font-size:12.5px; color:var(--muted); white-space:nowrap; }
+  .file-date { font-size:12px; color:var(--muted); font-family:var(--mono); white-space:nowrap; min-width:110px; text-align:right; }
+  .file-actions { display:flex; gap:6px; align-items:center; }
 
-  .upload-icon {
-    width: 52px; height: 52px;
-    border-radius: 14px;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.25rem;
-  }
+  .empty-state { padding:4rem 2rem; text-align:center; background:var(--surface); }
+  .empty-state p { color:var(--muted); font-size:14px; }
 
-  .upload-zone h2 {
-    font-family: var(--sans);
-    font-weight: 600;
-    font-size: 20px;
-    margin-bottom: 6px;
-    color: var(--text);
-  }
-  .upload-zone p { color: var(--muted); font-size: 14px; margin-bottom: 1.25rem; }
-  #file-input { display: none; }
+  #toast-container { position:fixed; bottom:1.5rem; right:1.5rem; display:flex; flex-direction:column; gap:8px; z-index:9999; }
+  .toast { background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:11px 16px; font-size:13.5px; color:var(--text); display:flex; align-items:center; gap:8px; animation:slideIn 0.2s ease; box-shadow:0 4px 24px rgba(0,0,0,0.4); max-width:320px; }
+  .toast.success .toast-dot { background:var(--success); }
+  .toast.error .toast-dot { background:var(--danger); }
+  .toast-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  @keyframes slideIn { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:translateX(0)} }
+  .copy-feedback { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); background:var(--accent); color:#fff; padding:12px 28px; border-radius:var(--radius-lg); font-family:var(--mono); font-size:14px; font-weight:700; opacity:0; pointer-events:none; transition:all 0.2s; z-index:9998; }
+  .copy-feedback.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
 
-  /* STATS BAR */
-  .stats-bar {
-    display: flex;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
-  .stat {
-    flex: 1;
-    background: var(--surface);
-    padding: 14px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: var(--mono); }
-  .stat-value { font-size: 22px; font-weight: 600; color: var(--text); font-family: var(--mono); }
-  .stat-value span { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:500; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+  .modal-bg.open { opacity:1; pointer-events:all; }
+  .modal { background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius-lg); padding:1.75rem; width:360px; max-width:90vw; }
+  .modal h3 { font-size:16px; font-weight:600; margin-bottom:1rem; }
+  .modal input[type=text] { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:9px 12px; font-size:14px; font-family:var(--sans); color:var(--text); outline:none; margin-bottom:1rem; }
+  .modal input[type=text]:focus { border-color:var(--accent); }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; }
 
-  /* FILES SECTION */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .section-title {
-    font-size: 13px;
-    font-family: var(--mono);
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-  }
+  footer { text-align:center; padding:1.5rem; font-size:12px; color:var(--muted); border-top:1px solid var(--border); font-family:var(--mono); }
 
-  /* SEARCH */
-  .search-wrap {
-    position: relative;
-    width: 220px;
-  }
-  .search-wrap svg {
-    position: absolute;
-    left: 10px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    pointer-events: none;
-    width: 14px; height: 14px;
-  }
-  .search-wrap input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 7px 10px 7px 32px;
-    font-size: 13px;
-    font-family: var(--sans);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap input::placeholder { color: var(--muted); }
-
-  /* FILE LIST */
-  .files-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .file-row {
-    display: grid;
-    grid-template-columns: 36px 1fr auto auto auto;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 16px;
-    background: var(--surface);
-    transition: background 0.12s;
-    cursor: default;
-  }
-  .file-row:hover { background: var(--surface2); }
-
-  .file-icon {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono);
-    font-size: 9px;
-    font-weight: 700;
-    flex-shrink: 0;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
-
-  .file-info { min-width: 0; }
-  .file-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 420px;
-  }
-  .file-meta {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 1px;
-    font-family: var(--mono);
-  }
-
-  .file-size {
-    font-family: var(--mono);
-    font-size: 12.5px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .file-date {
-    font-size: 12px;
-    color: var(--muted);
-    font-family: var(--mono);
-    white-space: nowrap;
-    min-width: 110px;
-    text-align: right;
-  }
-
-  .file-actions {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-
-  /* EMPTY STATE */
-  .empty-state {
-    padding: 4rem 2rem;
-    text-align: center;
-    background: var(--surface);
-  }
-  .empty-state p { color: var(--muted); font-size: 14px; }
-
-  /* TOAST */
-  #toast-container {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 9999;
-  }
-  .toast {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 11px 16px;
-    font-size: 13.5px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideIn 0.2s ease;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-    max-width: 320px;
-  }
-  .toast.success .toast-dot { background: var(--success); }
-  .toast.error .toast-dot { background: var(--danger); }
-  .toast-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  @keyframes slideIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
-
-  /* COPY FEEDBACK */
-  .copy-feedback {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%) scale(0.9);
-    background: var(--accent);
-    color: #fff;
-    padding: 12px 28px;
-    border-radius: var(--radius-lg);
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 700;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.2s;
-    z-index: 9998;
-  }
-  .copy-feedback.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-
-  /* PROGRESS */
-  .upload-progress {
-    margin-top: 1rem;
-    height: 3px;
-    background: var(--border2);
-    border-radius: 99px;
-    overflow: hidden;
-    display: none;
-  }
-  .upload-progress.active { display: block; }
-  .progress-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 99px;
-    width: 0%;
-    transition: width 0.3s;
-  }
-
-  /* NOTE BAR */
-  .note-bar {
-    background: rgba(124,106,255,0.08);
-    border: 1px solid rgba(124,106,255,0.2);
-    border-radius: var(--radius);
-    padding: 10px 16px;
-    font-size: 13px;
-    color: var(--accent-light);
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 1.5rem;
-    font-size: 12px;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 600px) {
-    nav { padding: 0 1rem; }
-    main { padding: 1.5rem 1rem; }
-    .file-date { display: none; }
-    .file-row { grid-template-columns: 32px 1fr auto auto; }
-    .file-name { max-width: 180px; }
-    .stats-bar { flex-direction: column; gap: 1px; }
+  @media(max-width:600px){
+    nav{padding:0 1rem;} main{padding:1.5rem 1rem;}
+    .file-date{display:none;} .file-row{grid-template-columns:32px 1fr auto auto;}
+    .stats-bar{flex-direction:column;gap:1px;} .upload-btns{flex-direction:column;align-items:center;}
+    .nav-actions .storage-label{display:none;}
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="#">
+  <button class="logo" onclick="navigateTo([])">
     <div class="logo-icon">
-      <svg viewBox="0 0 16 16" fill="none">
-        <path d="M3 2h7l3 3v9H3V2z" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>
-        <path d="M10 2v3h3" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <svg viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9H3V2z" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 2v3h3" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>
     </div>
     FileVault
-  </a>
+  </button>
   <div class="nav-actions">
-    <span id="storage-indicator" style="font-family:var(--mono);font-size:12px;color:var(--muted);">0 B used</span>
-    <button class="btn btn-sm" onclick="document.getElementById('file-input').click()">
+    <span class="storage-label" id="storage-indicator" style="font-family:var(--mono);font-size:12px;color:var(--muted);">0 B used</span>
+    <button class="btn btn-sm btn-folder" onclick="openFolderModal()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+      New Folder
+    </button>
+    <button class="btn btn-sm btn-primary" onclick="document.getElementById('file-input').click()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
       Upload
     </button>
@@ -430,300 +140,398 @@
 <main>
   <div class="note-bar">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    Files are stored in your browser's local storage. To persist files for others, upload them to a GitHub repo and enable GitHub Pages. Each file's share link is a data URL you can copy. Storage resets if you clear browser data.
+    Files and folders are stored in your browser's localStorage. Drag an entire folder onto the drop zone to upload it. Click folders to navigate inside them.
   </div>
 
   <div class="upload-zone" id="drop-zone">
     <div class="upload-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
     </div>
-    <h2>Drop files here</h2>
-    <p>Drag & drop any file, or click to browse. Max 10 MB per file.</p>
-    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('file-input').click()">Choose files</button>
+    <h2>Drop files or folders here</h2>
+    <p>Supports individual files, multi-select, and entire folder drag & drop. Max 10 MB per file.</p>
+    <div class="upload-btns">
+      <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('file-input').click()">Choose files</button>
+      <button class="btn btn-folder" onclick="event.stopPropagation();document.getElementById('folder-input').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        Choose folder
+      </button>
+    </div>
     <div class="upload-progress" id="upload-progress"><div class="progress-bar" id="progress-bar"></div></div>
     <input type="file" id="file-input" multiple>
+    <input type="file" id="folder-input" webkitdirectory multiple>
   </div>
 
   <div class="stats-bar">
-    <div class="stat">
-      <span class="stat-label">Total Files</span>
-      <span class="stat-value" id="stat-count">0</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Storage Used</span>
-      <span class="stat-value" id="stat-size">0 <span>B</span></span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Available</span>
-      <span class="stat-value" id="stat-avail">~5 <span>MB</span></span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Last Upload</span>
-      <span class="stat-value" id="stat-last" style="font-size:15px;padding-top:4px">—</span>
-    </div>
+    <div class="stat"><span class="stat-label">Files</span><span class="stat-value" id="stat-count">0</span></div>
+    <div class="stat"><span class="stat-label">Folders</span><span class="stat-value" id="stat-folders">0</span></div>
+    <div class="stat"><span class="stat-label">Storage Used</span><span class="stat-value" id="stat-size">0 <span>B</span></span></div>
+    <div class="stat"><span class="stat-label">Last Upload</span><span class="stat-value" id="stat-last" style="font-size:15px;padding-top:4px">—</span></div>
   </div>
 
+  <div class="breadcrumb" id="breadcrumb"></div>
+
   <div class="section-header">
-    <span class="section-title">Your Files</span>
+    <span class="section-title" id="section-title">Root</span>
     <div style="display:flex;gap:8px;align-items:center;">
       <div class="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="search-input" placeholder="Search files…">
       </div>
-      <button class="btn btn-sm btn-danger" id="clear-all-btn" onclick="clearAll()" style="display:none">Clear all</button>
+      <button class="btn btn-sm btn-danger" id="clear-btn" onclick="clearAll()" style="display:none">Clear all</button>
     </div>
   </div>
 
   <div class="files-list" id="files-list">
-    <div class="empty-state" id="empty-state">
-      <p>No files yet. Upload something to get started.</p>
-    </div>
+    <div class="empty-state"><p>No files yet. Upload something to get started.</p></div>
   </div>
 </main>
 
 <footer>FileVault &mdash; static file hosting &mdash; all data stored in browser localStorage</footer>
-
 <div id="toast-container"></div>
 <div class="copy-feedback" id="copy-feedback">Copied!</div>
 
+<!-- NEW FOLDER MODAL -->
+<div class="modal-bg" id="folder-modal" onclick="closeFolderModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>New Folder</h3>
+    <input type="text" id="folder-name-input" placeholder="Folder name…" maxlength="80">
+    <div class="modal-actions">
+      <button class="btn btn-sm" onclick="closeFolderModal()">Cancel</button>
+      <button class="btn btn-sm btn-primary" onclick="createFolder()">Create</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const FILES_KEY = 'filevault_files';
+const FK = 'fv_folders', FK2 = 'fv_files';
+let currentPath = []; // array of folder ids
+let searchQ = '';
 
-function getFiles() {
-  try { return JSON.parse(localStorage.getItem(FILES_KEY) || '[]'); } catch { return []; }
-}
-function saveFiles(files) {
-  try { localStorage.setItem(FILES_KEY, JSON.stringify(files)); return true; }
-  catch(e) { toast('Storage full — try deleting some files', 'error'); return false; }
-}
+function gf() { try{return JSON.parse(localStorage.getItem(FK2)||'[]')}catch{return[]} }
+function sf(d) { try{localStorage.setItem(FK2,JSON.stringify(d));return true}catch{toast('Storage full!','error');return false} }
+function gd() { try{return JSON.parse(localStorage.getItem(FK)||'[]')}catch{return[]} }
+function sd(d) { try{localStorage.setItem(FK,JSON.stringify(d));return true}catch{toast('Storage full!','error');return false} }
 
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/(1024*1024)).toFixed(2) + ' MB';
-}
+function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(2)+' MB';}
+function fmtDt(ts){const d=new Date(ts);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
+function uid(){return 'fv_'+Date.now()+'_'+Math.random().toString(36).slice(2);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function curFolderId(){return currentPath.length?currentPath[currentPath.length-1]:'';}
 
-function formatDate(ts) {
-  const d = new Date(ts);
-  return d.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) +
-    ' ' + d.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+function extColor(ext){
+  const m={pdf:'#f87171',jpg:'#60a5fa',jpeg:'#60a5fa',png:'#60a5fa',gif:'#60a5fa',webp:'#60a5fa',svg:'#60a5fa',mp4:'#c084fc',mov:'#c084fc',avi:'#c084fc',mp3:'#34d399',wav:'#34d399',flac:'#34d399',zip:'#fbbf24',rar:'#fbbf24',gz:'#fbbf24',txt:'#a3a3b8',md:'#a3a3b8',js:'#facc15',ts:'#60a5fa',html:'#f97316',css:'#7c6aff',json:'#34d399',py:'#60a5fa'};
+  return m[ext?.toLowerCase()]||'#888899';
 }
 
-function extColor(ext) {
-  const map = {
-    pdf:['#f87171','#3d1515'],
-    jpg:['#60a5fa','#0c2744'],jpeg:['#60a5fa','#0c2744'],png:['#60a5fa','#0c2744'],
-    gif:['#60a5fa','#0c2744'],webp:['#60a5fa','#0c2744'],svg:['#60a5fa','#0c2744'],
-    mp4:['#c084fc','#280d3d'],mov:['#c084fc','#280d3d'],avi:['#c084fc','#280d3d'],
-    mp3:['#34d399','#06241a'],wav:['#34d399','#06241a'],flac:['#34d399','#06241a'],
-    zip:['#fbbf24','#2e1e04'],rar:['#fbbf24','#2e1e04'],gz:['#fbbf24','#2e1e04'],
-    txt:['#a3a3b8','#1a1a28'],md:['#a3a3b8','#1a1a28'],
-    js:['#facc15','#2a1f04'],ts:['#60a5fa','#0c2744'],
-    html:['#f97316','#2d1008'],css:['#7c6aff','#1a1333'],
-    json:['#34d399','#06241a'],py:['#60a5fa','#0c2744'],
-  };
-  return map[ext?.toLowerCase()] || ['#888899','#1a1a22'];
+function toast(msg,type='success'){
+  const c=document.getElementById('toast-container'),t=document.createElement('div');
+  t.className='toast '+type;t.innerHTML='<div class="toast-dot"></div>'+msg;
+  c.appendChild(t);setTimeout(()=>t.remove(),3500);
+}
+function showCopied(){const e=document.getElementById('copy-feedback');e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1200);}
+
+/* ── NAVIGATION ── */
+function navigateTo(path){
+  currentPath=[...path];
+  searchQ='';
+  document.getElementById('search-input').value='';
+  render();
 }
 
-function toast(msg, type='success') {
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = `<div class="toast-dot"></div>${msg}`;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+function render(){
+  renderBreadcrumb();
+  renderList();
+  updateStats();
 }
 
-function copyFeedback() {
-  const el = document.getElementById('copy-feedback');
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 1200);
-}
+function renderBreadcrumb(){
+  const bc=document.getElementById('breadcrumb');
+  const folders=gd();
+  bc.innerHTML='';
 
-function copyLink(dataUrl, name) {
-  navigator.clipboard.writeText(dataUrl).then(() => {
-    copyFeedback();
-    toast(`Link copied for ${name}`);
-  }).catch(() => {
-    toast('Could not copy — try right-click → Copy', 'error');
+  const root=document.createElement('button');
+  root.className='bc-item'+(currentPath.length===0?' active':'');
+  root.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Root';
+  root.onclick=()=>navigateTo([]);
+  bc.appendChild(root);
+
+  currentPath.forEach((fid,i)=>{
+    const sep=document.createElement('span');sep.className='bc-sep';sep.textContent='/';bc.appendChild(sep);
+    const folder=folders.find(f=>f.id===fid);
+    const btn=document.createElement('button');
+    btn.className='bc-item'+(i===currentPath.length-1?' active':'');
+    btn.textContent=folder?folder.name:'…';
+    if(i<currentPath.length-1)btn.onclick=()=>navigateTo(currentPath.slice(0,i+1));
+    bc.appendChild(btn);
   });
+
+  const st=document.getElementById('section-title');
+  if(currentPath.length===0){st.textContent='Root';}
+  else{const f=folders.find(x=>x.id===curFolderId());st.textContent=f?f.name:'Folder';}
 }
 
-function downloadFile(dataUrl, name) {
-  const a = document.createElement('a');
-  a.href = dataUrl; a.download = name;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
+function renderList(){
+  const container=document.getElementById('files-list');
+  container.innerHTML='';
+  const allFolders=gd();
+  const allFiles=gf();
 
-function deleteFile(id) {
-  const files = getFiles().filter(f => f.id !== id);
-  saveFiles(files);
-  renderFiles();
-  updateStats();
-  toast('File deleted', 'error');
-}
+  // Folders whose parent_id matches current folder
+  const parentId=curFolderId();
+  let folders=allFolders.filter(f=>f.parent_id===parentId);
+  let files=allFiles.filter(f=>(f.folder_id||'')=== parentId);
 
-function clearAll() {
-  if (!confirm('Delete all files? This cannot be undone.')) return;
-  saveFiles([]);
-  renderFiles();
-  updateStats();
-  toast('All files deleted', 'error');
-}
-
-function updateStats() {
-  const files = getFiles();
-  const total = files.reduce((s,f) => s + (f.size||0), 0);
-  document.getElementById('stat-count').textContent = files.length;
-  document.getElementById('stat-size').innerHTML = formatSize(total).replace(/([A-Z]+)$/, '<span>$1</span>');
-  document.getElementById('storage-indicator').textContent = formatSize(total) + ' used';
-  document.getElementById('clear-all-btn').style.display = files.length ? '' : 'none';
-  const last = files.length ? files[files.length-1] : null;
-  document.getElementById('stat-last').textContent = last
-    ? new Date(last.uploaded).toLocaleDateString('en-US',{month:'short',day:'numeric'})
-    : '—';
-}
-
-function renderFiles(filter='') {
-  const container = document.getElementById('files-list');
-  const empty = document.getElementById('empty-state');
-  let files = getFiles();
-  if (filter) files = files.filter(f => f.name.toLowerCase().includes(filter.toLowerCase()));
-  files = [...files].reverse();
-
-  container.innerHTML = '';
-  if (!files.length) {
-    const e = document.createElement('div');
-    e.className = 'empty-state';
-    e.innerHTML = `<p>${filter ? 'No files match your search.' : 'No files yet. Upload something to get started.'}</p>`;
-    container.appendChild(e);
-    return;
+  if(searchQ){
+    files=files.filter(f=>f.name.toLowerCase().includes(searchQ.toLowerCase()));
+    // When searching, hide folders
+    folders=[];
   }
 
-  files.forEach(f => {
-    const ext = f.name.split('.').pop();
-    const [bg, textColor] = extColor(ext);
-    const row = document.createElement('div');
-    row.className = 'file-row';
-    row.innerHTML = `
-      <div class="file-icon" style="background:${bg}22;color:${bg};border:1px solid ${bg}33">${ext.slice(0,4)}</div>
+  document.getElementById('clear-btn').style.display=(allFiles.length||allFolders.length)?'':'none';
+
+  if(!folders.length&&!files.length){
+    const e=document.createElement('div');e.className='empty-state';
+    e.innerHTML='<p>'+(searchQ?'No files match your search.':'This folder is empty. Upload files or create a subfolder.')+'</p>';
+    container.appendChild(e);return;
+  }
+
+  // Render folders
+  folders.forEach(folder=>{
+    const fileCount=allFiles.filter(f=>isInFolder(allFolders,f.folder_id||'',folder.id)).length;
+    const row=document.createElement('div');
+    row.className='file-row is-folder';
+    row.onclick=()=>navigateTo([...currentPath,folder.id]);
+    row.innerHTML=`
+      <div class="folder-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(251,191,36,0.6)" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
       <div class="file-info">
-        <div class="file-name" title="${f.name}">${f.name}</div>
-        <div class="file-meta">${f.type || 'unknown type'}</div>
+        <div class="file-name" style="color:var(--folder)">${esc(folder.name)}</div>
+        <div class="file-meta">${fileCount} item${fileCount!==1?'s':''} &middot; folder</div>
       </div>
-      <div class="file-size">${formatSize(f.size)}</div>
-      <div class="file-date">${formatDate(f.uploaded)}</div>
+      <div class="file-size">—</div>
+      <div class="file-date">${fmtDt(folder.created)}</div>
       <div class="file-actions">
-        <button class="btn btn-sm btn-icon" title="Copy link" onclick="copyLink('${f.id}','${f.name.replace(/'/g,"\\'")}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        </button>
-        <button class="btn btn-sm btn-icon" title="Download" onclick="downloadFileById('${f.id}','${f.name.replace(/'/g,"\\'")}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </button>
-        <button class="btn btn-sm btn-icon btn-danger" title="Delete" onclick="deleteFile('${f.id}')">
+        <button class="btn btn-sm btn-icon btn-danger" title="Delete folder" onclick="event.stopPropagation();delFolder('${folder.id}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         </button>
+      </div>`;
+    container.appendChild(row);
+  });
+
+  // Render files (newest first)
+  [...files].reverse().forEach(f=>{
+    const ext=f.name.split('.').pop();
+    const col=extColor(ext);
+    const row=document.createElement('div');row.className='file-row';
+    row.innerHTML=`
+      <div class="file-icon" style="background:${col}22;color:${col};border:1px solid ${col}33">${esc(ext.slice(0,4))}</div>
+      <div class="file-info">
+        <div class="file-name" title="${esc(f.name)}">${esc(f.name)}</div>
+        <div class="file-meta">${esc(f.type||'unknown type')}</div>
       </div>
-    `;
+      <div class="file-size">${fmtSz(f.size)}</div>
+      <div class="file-date">${fmtDt(f.uploaded)}</div>
+      <div class="file-actions">
+        <button class="btn btn-sm btn-icon" title="Copy data URL" onclick="copyLink('${f.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+        <button class="btn btn-sm btn-icon" title="Download" onclick="dlFile('${f.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="btn btn-sm btn-icon btn-danger" title="Delete" onclick="delFile('${f.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>`;
     container.appendChild(row);
   });
 }
 
-function downloadFileById(id, name) {
-  const files = getFiles();
-  const f = files.find(x => x.id === id);
-  if (f) downloadFile(f.data, name);
+// Check if a file/folder is anywhere within a given folder (recursively)
+function isInFolder(allFolders,fileFolderId,targetFolderId){
+  if(fileFolderId===targetFolderId)return true;
+  // Walk up the folder tree from fileFolderId to see if we reach targetFolderId
+  let cur=fileFolderId;
+  const visited=new Set();
+  while(cur){
+    if(visited.has(cur))break;visited.add(cur);
+    if(cur===targetFolderId)return true;
+    const f=allFolders.find(x=>x.id===cur);
+    cur=f?f.parent_id:'';
+  }
+  return false;
 }
 
-// Override copyLink to use stored data URL
-function copyLink(id, name) {
-  const files = getFiles();
-  const f = files.find(x => x.id === id);
-  if (!f) return;
-  navigator.clipboard.writeText(f.data).then(() => {
-    copyFeedback();
-    toast(`Link copied for ${name}`);
-  }).catch(() => {
-    toast('Copy failed — try right-click → Copy', 'error');
-  });
+function updateStats(){
+  const files=gf(),folders=gd();
+  const total=files.reduce((s,f)=>s+(f.size||0),0);
+  document.getElementById('stat-count').textContent=files.length;
+  document.getElementById('stat-folders').textContent=folders.length;
+  document.getElementById('stat-size').innerHTML=fmtSz(total).replace(/([A-Z]+)$/,'<span>$1</span>');
+  document.getElementById('storage-indicator').textContent=fmtSz(total)+' used';
+  const last=files.length?files[files.length-1]:null;
+  document.getElementById('stat-last').textContent=last?new Date(last.uploaded).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
 }
 
-function handleFiles(rawFiles) {
-  const MAX = 10 * 1024 * 1024;
-  const progress = document.getElementById('upload-progress');
-  const bar = document.getElementById('progress-bar');
+/* ── FILE ACTIONS ── */
+function copyLink(id){
+  const f=gf().find(x=>x.id===id);if(!f)return;
+  navigator.clipboard.writeText(f.data).then(()=>{showCopied();toast('Link copied for '+f.name);}).catch(()=>toast('Copy failed','error'));
+}
+function dlFile(id){const f=gf().find(x=>x.id===id);if(!f)return;const a=document.createElement('a');a.href=f.data;a.download=f.name;document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function delFile(id){sf(gf().filter(f=>f.id!==id));render();toast('File deleted','error');}
 
-  let done = 0;
-  const total = rawFiles.length;
-  if (!total) return;
+function delFolder(id){
+  if(!confirm('Delete this folder and ALL its contents?'))return;
+  const allFolders=gd();
+  // Collect all descendant folder ids
+  const toDelete=new Set([id]);
+  let changed=true;
+  while(changed){changed=false;allFolders.forEach(f=>{if(!toDelete.has(f.id)&&toDelete.has(f.parent_id)){toDelete.add(f.id);changed=true;}});}
+  sd(allFolders.filter(f=>!toDelete.has(f.id)));
+  sf(gf().filter(f=>!toDelete.has(f.folder_id||'')));
+  render();toast('Folder deleted','error');
+}
 
-  progress.classList.add('active');
-  bar.style.width = '0%';
+function clearAll(){
+  if(!confirm('Delete ALL files and folders? This cannot be undone.'))return;
+  localStorage.removeItem(FK);localStorage.removeItem(FK2);
+  currentPath=[];render();toast('Everything deleted','error');
+}
 
-  const existing = getFiles();
-  const queue = [...rawFiles];
+/* ── FOLDER MODAL ── */
+function openFolderModal(){document.getElementById('folder-modal').classList.add('open');setTimeout(()=>document.getElementById('folder-name-input').focus(),80);}
+function closeFolderModal(){document.getElementById('folder-modal').classList.remove('open');document.getElementById('folder-name-input').value='';}
+document.getElementById('folder-name-input').addEventListener('keydown',e=>{if(e.key==='Enter')createFolder();if(e.key==='Escape')closeFolderModal();});
 
-  function processNext() {
-    if (!queue.length) {
-      bar.style.width = '100%';
-      setTimeout(() => { progress.classList.remove('active'); bar.style.width = '0%'; }, 600);
-      renderFiles(document.getElementById('search-input').value);
-      updateStats();
-      return;
-    }
-    const file = queue.shift();
-    if (file.size > MAX) {
-      toast(`${file.name} is too large (max 10 MB)`, 'error');
-      done++;
-      bar.style.width = (done/total*100) + '%';
-      processNext();
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = e => {
-      existing.push({
-        id: 'fv_' + Date.now() + '_' + Math.random().toString(36).slice(2),
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        uploaded: Date.now(),
-        data: e.target.result
-      });
-      done++;
-      bar.style.width = (done/total*100) + '%';
-      if (!saveFiles(existing)) { processNext(); return; }
-      toast(`Uploaded ${file.name}`);
-      processNext();
-    };
+function createFolder(name, parentId){
+  const inp=document.getElementById('folder-name-input');
+  const n=(name||inp.value||'').trim();
+  if(!n){if(!name)toast('Enter a folder name','error');return null;}
+  const pid=parentId!==undefined?parentId:curFolderId();
+  const id=uid();
+  const folders=gd();
+  folders.push({id,name:n,parent_id:pid,created:Date.now()});
+  sd(folders);
+  if(!name){closeFolderModal();toast('Folder "'+n+'" created');}
+  render();
+  return id;
+}
+
+/* ── UPLOAD FILES ── */
+function uploadFiles(rawFiles, folderId){
+  const MAX=10*1024*1024;
+  const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
+  const fid=folderId!==undefined?folderId:curFolderId();
+  const arr=[...rawFiles];if(!arr.length)return;
+  progress.classList.add('active');bar.style.width='0%';
+  const existing=gf();let done=0;const total=arr.length;
+  function next(){
+    if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
+    const file=arr.shift();
+    if(file.size>MAX){toast(file.name+' is too large (max 10 MB)','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    const reader=new FileReader();
+    reader.onload=e=>{existing.push({id:uid(),name:file.name,type:file.type,size:file.size,uploaded:Date.now(),folder_id:fid,data:e.target.result});done++;bar.style.width=(done/total*100)+'%';if(!sf(existing)){next();return;}toast('Uploaded '+file.name);next();};
     reader.readAsDataURL(file);
   }
-  processNext();
+  next();
 }
 
-// Drag & drop
-const zone = document.getElementById('drop-zone');
-zone.addEventListener('click', () => document.getElementById('file-input').click());
-zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-zone.addEventListener('drop', e => {
-  e.preventDefault(); zone.classList.remove('drag-over');
-  handleFiles([...e.dataTransfer.files]);
-});
-document.getElementById('file-input').addEventListener('change', e => {
-  handleFiles([...e.target.files]);
-  e.target.value = '';
-});
-document.getElementById('search-input').addEventListener('input', e => renderFiles(e.target.value));
+/* ── FOLDER UPLOAD (via input[webkitdirectory]) ── */
+function handleFolderInput(rawFiles){
+  if(!rawFiles.length)return;
+  const fileList=[...rawFiles].sort((a,b)=>a.webkitRelativePath.localeCompare(b.webkitRelativePath));
+  const folderMap={'':curFolderId()};
+  const folders=gd();
 
-// Init
-renderFiles();
-updateStats();
+  fileList.forEach(file=>{
+    const parts=file.webkitRelativePath.split('/');
+    for(let i=0;i<parts.length-1;i++){
+      const key=parts.slice(0,i+1).join('/');
+      if(!folderMap[key]){
+        const parentKey=parts.slice(0,i).join('/');
+        const id=uid();
+        folders.push({id,name:parts[i],parent_id:folderMap[parentKey]||curFolderId(),created:Date.now()});
+        folderMap[key]=id;
+      }
+    }
+  });
+  sd(folders);
+
+  const MAX=10*1024*1024;
+  const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
+  progress.classList.add('active');bar.style.width='0%';
+  const existing=gf();let done=0;const total=fileList.length;
+  const arr=[...fileList];
+  function next(){
+    if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
+    const file=arr.shift();
+    if(file.size>MAX){toast(file.name+' too large','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    const parts=file.webkitRelativePath.split('/');
+    const key=parts.slice(0,parts.length-1).join('/');
+    const folderId=folderMap[key]||curFolderId();
+    const reader=new FileReader();
+    reader.onload=e=>{existing.push({id:uid(),name:file.name,type:file.type,size:file.size,uploaded:Date.now(),folder_id:folderId,data:e.target.result});done++;bar.style.width=(done/total*100)+'%';sf(existing);next();};
+    reader.readAsDataURL(file);
+  }
+  next();
+}
+
+/* ── DRAG & DROP (with folder support) ── */
+const zone=document.getElementById('drop-zone');
+zone.addEventListener('click',()=>document.getElementById('file-input').click());
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});
+zone.addEventListener('dragleave',e=>{if(!zone.contains(e.relatedTarget))zone.classList.remove('drag-over');});
+zone.addEventListener('drop',async e=>{
+  e.preventDefault();zone.classList.remove('drag-over');
+  const items=[...e.dataTransfer.items];
+  const hasDir=items.some(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()?.isDirectory);
+  if(!hasDir){uploadFiles([...e.dataTransfer.files]);return;}
+
+  // Traverse directory entries recursively
+  async function readEntry(entry,parentFolderId){
+    if(entry.isFile){
+      return new Promise(res=>{entry.file(f=>{f._folderId=parentFolderId;res(f);});});
+    } else if(entry.isDirectory){
+      const id=uid();const folders=gd();
+      folders.push({id,name:entry.name,parent_id:parentFolderId,created:Date.now()});sd(folders);
+      const dirReader=entry.createReader();
+      const entries=await new Promise(res=>{dirReader.readEntries(res);});
+      const results=[];
+      for(const e of entries)results.push(await readEntry(e,id));
+      return results.flat();
+    }
+    return [];
+  }
+
+  const allFiles=[];
+  for(const item of items){
+    const entry=item.webkitGetAsEntry();
+    if(entry){const files=await readEntry(entry,curFolderId());allFiles.push(...[].concat(files).filter(Boolean));}
+  }
+
+  if(!allFiles.length)return;
+  const MAX=10*1024*1024;
+  const progress=document.getElementById('upload-progress'),bar=document.getElementById('progress-bar');
+  progress.classList.add('active');bar.style.width='0%';
+  const existing=gf();let done=0;const total=allFiles.length;
+  const arr=[...allFiles];
+  function next(){
+    if(!arr.length){bar.style.width='100%';setTimeout(()=>{progress.classList.remove('active');bar.style.width='0%';},600);render();return;}
+    const file=arr.shift();
+    if(file.size>MAX){toast(file.name+' too large','error');done++;bar.style.width=(done/total*100)+'%';next();return;}
+    const reader=new FileReader();
+    reader.onload=ev=>{existing.push({id:uid(),name:file.name,type:file.type,size:file.size,uploaded:Date.now(),folder_id:file._folderId||'',data:ev.target.result});done++;bar.style.width=(done/total*100)+'%';sf(existing);next();};
+    reader.readAsDataURL(file);
+  }
+  next();
+});
+
+document.getElementById('file-input').addEventListener('change',e=>{uploadFiles([...e.target.files]);e.target.value='';});
+document.getElementById('folder-input').addEventListener('change',e=>{handleFolderInput([...e.target.files]);e.target.value='';});
+document.getElementById('search-input').addEventListener('input',e=>{searchQ=e.target.value;renderList();});
+
+render();
 </script>
 </body>
 </html>
